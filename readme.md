@@ -10,9 +10,10 @@ This repository contains a Docker Compose file that can be used to run all servi
 2. Start all services:
 `docker-compose up`
 
-## Open the UI
+## Using QHAna
 
 Open http://localhost:4200 in a web browser to use the QHAna UI.
+Go to the settings and add http://localhost:5000 to the plugin endpoints.
 
 ## Troubleshooting
 
