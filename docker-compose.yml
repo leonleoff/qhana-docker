@@ -1,12 +1,13 @@
 services:
   qhana-plugin-runner:
-    build: .
+    platform: linux/amd64
+    build: https://github.com/UST-QuAntiL/qhana-plugin-runner.git#main
     image: qhana-plugin-runner
     depends_on:
       - redis
       - postgres
     ports:
-      - "5005:5005"
+      - 5000:5005
     volumes:
       - instance:/app/instance
     environment:
@@ -29,7 +30,7 @@ services:
     profiles:
       - with_db
   worker:
-    build: .
+    build: https://github.com/UST-QuAntiL/qhana-plugin-runner.git#main
     image: qhana-plugin-runner
     depends_on:
       - qhana-plugin-runner
@@ -40,5 +41,15 @@ services:
       RESULT_BACKEND: redis://redis:6379
       SQLALCHEMY_DATABASE_URI: "postgresql+psycopg2://user:password@postgres:5432/default_db"
     entrypoint: ["poetry", "run", "invoke", "worker"]
+  backend:
+    build: https://github.com/UST-QuAntiL/qhana-backend.git#main
+    image: qhana-backend
+    ports:
+      - 9090:9090
+  ui:
+    build: https://github.com/UST-QuAntiL/qhana-ui.git#main
+    image: qhana-ui
+    ports:
+      - 4200:4200
 volumes:
   instance:
