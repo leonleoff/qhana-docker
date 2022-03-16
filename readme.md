@@ -4,18 +4,9 @@ This repository contains a Docker Compose file that can be used to run all servi
 
 ## Start
 
-1. Automatically clone the repositories of the services and build the images with this command:
-`docker-compose build`
-
-2. Start all services:
 `docker-compose up`
 
 ## Using QHAna
 
-Open http://localhost:4200 in a web browser to use the QHAna UI.
-Go to the settings and add http://localhost:5000 to the plugin endpoints.
-
-## Troubleshooting
-
-### "Port 5000 already in use" on Mac OS Monterey
-Disable AirPlay Receiver in the system settings.
+Open http://localhost:8080 in a web browser to use the QHAna UI.
+Go to the settings and add http://localhost:5005 to the plugin endpoints.

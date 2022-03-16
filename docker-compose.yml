@@ -1,20 +1,20 @@
 services:
   qhana-plugin-runner:
     platform: linux/amd64
-    build: https://github.com/UST-QuAntiL/qhana-plugin-runner.git#main
-    image: qhana-plugin-runner
+    image: ghcr.io/ust-quantil/qhana-plugin-runner:main
     depends_on:
       - redis
       - postgres
     ports:
-      - 5000:5005
+      - "5005:8080"
     volumes:
       - instance:/app/instance
     environment:
+      CONCURRENCY: 2
       BROKER_URL: redis://redis:6379
       RESULT_BACKEND: redis://redis:6379
       SQLALCHEMY_DATABASE_URI: "postgresql+psycopg2://user:password@postgres:5432/default_db"
-    entrypoint: ["/app/start.sh"]
+      GIT_PLUGINS: "git+https://github.com/UST-QuAntiL/qhana-plugin-runner.git@main#subdirectory=/plugins"
   redis:
     image: "redis:latest"
     ports:
@@ -30,26 +30,26 @@ services:
     profiles:
       - with_db
   worker:
-    build: https://github.com/UST-QuAntiL/qhana-plugin-runner.git#main
-    image: qhana-plugin-runner
+    platform: linux/amd64
+    image: ghcr.io/ust-quantil/qhana-plugin-runner:main
     depends_on:
       - qhana-plugin-runner
     volumes:
       - instance:/app/instance
     environment:
+      CONTAINER_MODE: worker
+      CONCURRENCY: 2
       BROKER_URL: redis://redis:6379
       RESULT_BACKEND: redis://redis:6379
       SQLALCHEMY_DATABASE_URI: "postgresql+psycopg2://user:password@postgres:5432/default_db"
-    entrypoint: ["poetry", "run", "invoke", "worker"]
+      GIT_PLUGINS: "git+https://github.com/UST-QuAntiL/qhana-plugin-runner.git@main#subdirectory=/plugins"
   backend:
-    build: https://github.com/UST-QuAntiL/qhana-backend.git#main
-    image: qhana-backend
+    image: ghcr.io/ust-quantil/qhana-backend:main
     ports:
       - 9090:9090
   ui:
-    build: https://github.com/UST-QuAntiL/qhana-ui.git#main
-    image: qhana-ui
+    image: ghcr.io/ust-quantil/qhana-ui:main
     ports:
-      - 4200:4200
+      - 8080:8080
 volumes:
   instance:
