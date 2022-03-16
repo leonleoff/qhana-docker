@@ -9,7 +9,6 @@ services:
       - "5005:8080"
     volumes:
       - instance:/app/instance
-      - ./plugins:/app/plugins
     environment:
       CONCURRENCY: 2
       BROKER_URL: redis://redis:6379
@@ -37,7 +36,6 @@ services:
       - qhana-plugin-runner
     volumes:
       - instance:/app/instance
-      - ./plugins:/app/plugins
     environment:
       CONTAINER_MODE: worker
       CONCURRENCY: 2
