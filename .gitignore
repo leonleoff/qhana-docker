@@ -1,0 +1,9 @@
+# Custom ignores:
+
+.idea/
+.vscode/
+docs/readme.md
+
+# Sphinx documentation
+docs/_build/
+

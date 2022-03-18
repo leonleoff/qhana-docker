@@ -1,0 +1,61 @@
+[tool.poetry]
+name = "QHAna User Documentation"
+version = "0.1.0"
+description = "User Documentation for the QHAna research tool."
+authors = ["QHAna authors"]
+license = "CC-BY-4.0"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.7"
+
+[tool.poetry.dev-dependencies]
+Sphinx = "^4.0.0"
+myst-parser = "^0.15.1"
+sphinx-rtd-theme = "^0.5.2"
+tomli = "^2.0.1"
+python-dotenv = "^0.19.2"
+
+
+[tool.sphinx]
+copyright-year = 2022
+enable-autodoc = false
+enable-napoleon = false
+enable-autosectionlabel = true
+enable-markdown = true
+enable-todo = true
+# update gitignore if you want to edit docs/changelog.md manually!
+include-changelog = false
+# update gitignore if you want to edit docs/readme.md manually!
+include-readme = false
+# experimental/unstable feature
+python_use_unqualified_type_names = false
+
+[tool.sphinx.intersphinx-mapping]
+pluginrunner = ["https://qhana-plugin-runner.readthedocs.io/en/latest/"]
+
+[tool.sphinx.autosectionlabel]
+prefix-document = true
+
+[tool.sphinx.myst]
+# create anchors for h1 and h2
+heading_anchors = 2
+# markdown parser; see <https://myst-parser.readthedocs.io/en/latest/syntax/optional.html>
+extensions = [
+    #"amsmath",
+    "colon_fence",
+    "deflist",
+    "dollarmath",
+    "html_admonition",
+    "html_image",
+    #"linkify", # requires installation of linkify-it-py
+    "replacements",
+    "smartquotes",
+    "substitution",
+    "tasklist",
+]
+# substitutions = {"key": "substitution value"}
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"
