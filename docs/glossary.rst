@@ -7,7 +7,7 @@ Glossary
         Quantum Humanities Analysis tool.
 
     Plugin Runner
-        A framework that supports the creation of QHAna plugins written in python.
+        A framework that supports the creation of QHAna plugins written in python. (:external+pluginrunner:doc:`Developer documentation <index>`)
     
     QHAna Plugin
     Plugin
