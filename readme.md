@@ -1,6 +1,9 @@
 # QHAna Docker
 
-This repository contains a Docker Compose file that can be used to run all services that are necessary for QHAna.
+This repository contains a Docker Compose file that can be used to run all services that are necessary for QHAna and the user documentation for QHAna.
+
+The user documentation for QHAna can be viewed on [qhana.readthedocs.io](https://qhana.readthedocs.io) [![Documentation Status](https://readthedocs.org/projects/qhana/badge/?version=latest)](https://qhana.readthedocs.io/en/latest/?badge=latest)
+
 
 ## Start
 
