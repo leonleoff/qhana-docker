@@ -7,6 +7,7 @@ Welcome to QHAna User Documentation!
 
     quickstart
     installation
+    docker-compose
     glossary
 
 
