@@ -47,6 +47,8 @@ services:
     image: ghcr.io/ust-quantil/qhana-backend:main
     volumes:
       - experiments:/app/data
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     ports:
       - 9090:9090
   ui:
