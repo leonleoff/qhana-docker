@@ -26,6 +26,11 @@ poetry export --dev --format requirements.txt --without-hashes --output "./docs/
 ```
 
 
+## Known Issues
+
+- ufw on linux blocks connections from the backend to the plugin runner
+   - temporary fix: open port 5005 in ufw or use firewalld instead of ufw
+
 
 ## Acknowledgements
 
