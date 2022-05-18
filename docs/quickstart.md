@@ -90,9 +90,9 @@ It is ordered by ascending step number, meaning that the first step is at the to
 
 If you have started QHAna together with the Mini MUSE database, you can take a look at the following documents on how to process the data with the available plugins.
 
-Plugin sequence: [PDF](pdfs/Mini_MUSE_Plugin_Sequence.pdf)
+Plugin sequence: {download}`PDF <pdfs/Mini_MUSE_Plugin_Sequence.pdf>`
 
-Tutorial with screenshots:[PDF](pdfs/Mini_MUSE_Plugin_Tutorial.pdf)
+Tutorial with screenshots: {download}`PDF <pdfs/Mini_MUSE_Plugin_Tutorial.pdf>`
 
 ## Next Steps
 
