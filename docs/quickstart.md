@@ -86,6 +86,14 @@ It is ordered by ascending step number, meaning that the first step is at the to
 ![The list of timeline steps.](images/qhana-timeline-overview-page.png)
 
 
+## Using the Mini MUSE dataset
+
+If you have started QHAna together with the Mini MUSE database, you can take a look at the following documents on how to process the data with the available plugins.
+
+Plugin sequence: {download}`PDF <pdfs/Mini_MUSE_Plugin_Sequence.pdf>`
+
+Tutorial with screenshots: {download}`PDF <pdfs/Mini_MUSE_Plugin_Tutorial.pdf>`
+
 ## Next Steps
 
 ```{todo}
