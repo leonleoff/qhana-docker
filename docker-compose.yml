@@ -1,6 +1,5 @@
 services:
   qhana-plugin-runner:
-    platform: linux/amd64
     image: ghcr.io/ust-quantil/qhana-plugin-runner:main
     depends_on:
       - redis
@@ -43,7 +42,6 @@ services:
   muse-db:
     image: ghcr.io/ust-quantil/mini-muse:main
   worker:
-    platform: linux/amd64
     image: ghcr.io/ust-quantil/qhana-plugin-runner:main
     depends_on:
       - qhana-plugin-runner
