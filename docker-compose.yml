@@ -18,6 +18,8 @@ services:
       MINIO_CLIENT: '{"endpoint": "minio:9000", "access_key": "QHANA", "secret_key": "QHANAQHANA", "secure": false}'
       URL_MAP: '{"(https?://)(localhost|host.docker.internal):9090": "\\1backend:9090"}'
       GIT_PLUGINS: "git+https://github.com/UST-QuAntiL/qhana-plugin-runner.git@main#subdirectory=/plugins"
+      CAMUNDA_API_URL: "http://camunda:8080/engine-rest"
+      PLUGIN_RUNNER_URLS: "http://qhana-plugin-runner:8080"
   redis:
     image: "redis:latest"
     ports:
@@ -57,6 +59,12 @@ services:
       MINIO_CLIENT: '{"endpoint": "minio:9000", "access_key": "QHANA", "secret_key": "QHANAQHANA", "secure": false}'
       URL_MAP: '{"(https?://)(localhost|host.docker.internal):9090": "\\1backend:9090"}'
       GIT_PLUGINS: "git+https://github.com/UST-QuAntiL/qhana-plugin-runner.git@main#subdirectory=/plugins"
+      CAMUNDA_API_URL: "http://camunda:8080/engine-rest"
+      PLUGIN_RUNNER_URLS: "http://qhana-plugin-runner:8080"
+      PERIODIC_SCHEDULER: "True"
+      WAIT_HOSTS: redis:6379, camunda:8080
+      WAIT_TIMEOUT: 300
+      WAIT_SLEEP_INTERVAL: 5
   backend:
     image: ghcr.io/ust-quantil/qhana-backend:main
     volumes:
@@ -71,6 +79,10 @@ services:
     image: ghcr.io/ust-quantil/qhana-ui:main
     ports:
       - 8080:8080
+  camunda:
+    image: camunda/camunda-bpm-platform:run-latest
+    ports:
+      - "8081:8080"
 volumes:
   minio:
   instance:
