@@ -17,7 +17,11 @@ services:
       DEFAULT_FILE_STORE: "minio"
       MINIO_CLIENT: '{"endpoint": "minio:9000", "access_key": "QHANA", "secret_key": "QHANAQHANA", "secure": false}'
       URL_MAP: '{"(https?://)(localhost|host.docker.internal):9090": "\\1backend:9090"}'
-      GIT_PLUGINS: "git+https://github.com/UST-QuAntiL/qhana-plugin-runner.git@main#subdirectory=/plugins"
+      GIT_PLUGINS: "git+https://github.com/UST-QuAntiL/qhana-plugin-runner.git@update_package_versions#subdirectory=/plugins\ngit+https://github.com/UST-QuAntiL/nisq-analyzer-prio-service.git@update_scikit_learn#subdirectory=/plugins"
+        # TODO: set branches to main/master after merge
+      NISQ_ANALYZER_UI_URL: http://localhost:5009
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
   redis:
     image: "redis:latest"
     ports:
@@ -56,7 +60,10 @@ services:
       DEFAULT_FILE_STORE: "minio"
       MINIO_CLIENT: '{"endpoint": "minio:9000", "access_key": "QHANA", "secret_key": "QHANAQHANA", "secure": false}'
       URL_MAP: '{"(https?://)(localhost|host.docker.internal):9090": "\\1backend:9090"}'
-      GIT_PLUGINS: "git+https://github.com/UST-QuAntiL/qhana-plugin-runner.git@main#subdirectory=/plugins"
+      GIT_PLUGINS: "git+https://github.com/UST-QuAntiL/qhana-plugin-runner.git@update_package_versions#subdirectory=/plugins\ngit+https://github.com/UST-QuAntiL/nisq-analyzer-prio-service.git@update_scikit_learn#subdirectory=/plugins"
+        # TODO: set branches to main/master after merge
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
   backend:
     image: ghcr.io/ust-quantil/qhana-backend:main
     volumes:
@@ -65,13 +72,111 @@ services:
       - "host.docker.internal:host-gateway"
     environment:
       QHANA_URL_MAPPING: '{"(?<=^|https?://)(localhost|host.docker.internal):5005": "qhana-plugin-runner:8080", "(?<=^|https?://)localhost": "host.docker.internal"}'
+      QHANA_HOST: http://host.docker.internal:9090
     ports:
       - 9090:9090
   ui:
     image: ghcr.io/ust-quantil/qhana-ui:main
     ports:
       - 8080:8080
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  # For NISQ-Analyzer plugin
+  nisq-analyzer-ui:
+    image: planqk/nisq-analyzer-ui:latest
+    environment:
+      NISQ_ANALYZER_HOST_NAME: localhost
+      NISQ_ANALYZER_PORT: 5010
+    ports:
+      - '5009:80'
+    networks:
+      - default
+  nisq-analyzer:
+    image: planqk/nisq-analyzer:latest
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    environment:
+      POSTGRES_HOSTNAME: nisq-analyzer-db
+      POSTGRES_PORT: 5060
+      POSTGRES_USER: nisq
+      POSTGRES_PASSWORD: nisq
+      POSTGRES_DB: nisq
+
+      # activate correct application properties
+      SPRING_PROFILES_ACTIVE: docker
+
+      TRANSLATOR_HOSTNAME: quantum-transpiler
+      TRANSLATOR_PORT: 5012
+      # Configuration of the SDK Connector Services
+      QISKIT_HOSTNAME: qiskit-service
+      QISKIT_PORT: 5013
+      # Configure Prioritization Service connection
+      PRIORITIZATION_HOSTNAME: qhana-plugin-runner
+      PRIORITIZATION_PORT: 8080
+    ports:
+      - '5010:5010'
+    networks:
+      - default
+
+  qiskit-service:
+    image: planqk/qiskit-service:latest
+    command: sh /app/startup.sh
+    ports:
+      - "5013:5013"
+    environment:
+      - REDIS_URL=redis://nisq-analyzer-redis:5040
+      - DATABASE_URL=sqlite:////data/app.db
+    volumes:
+      - exec_data:/data
+    networks:
+      - default
+
+  qiskit-rq-worker:
+    image: planqk/qiskit-service:latest
+    command: rq worker --url redis://nisq-analyzer-redis:5040 qiskit-service_execute
+    environment:
+      - REDIS_URL=redis://nisq-analyzer-redis:5040
+      - DATABASE_URL=sqlite:////data/app.db
+    volumes:
+      - exec_data:/data
+    depends_on:
+      - nisq-analyzer-redis
+    deploy:
+      replicas: 2
+
+  nisq-analyzer-redis:
+    image: redis:6.2.2
+    ports:
+      - "5040:5040"
+    command: --port 5040
+    networks:
+      - default
+
+  nisq-analyzer-db:
+    image: postgres
+    environment:
+      POSTGRES_PASSWORD: nisq
+      POSTGRES_USER: nisq
+      POSTGRES_DB: nisq
+    command: -p 5060
+    ports:
+      - "5060:5060"
+
+  gateway:
+    image: planqk/gateway:latest
+    environment:
+      NISQ_ANALYZER_URI: http://localhost:5010
+    ports:
+      - '6473:6473'
+    networks:
+      - default
+      
 volumes:
   minio:
   instance:
   experiments:
+  exec_data:
+networks:
+  default:
+    driver: bridge
