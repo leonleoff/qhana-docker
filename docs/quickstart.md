@@ -6,14 +6,12 @@ QHAna can be tested in a local docker-compose setup.
 
 ## Settings
 
-```{todo}
-Describe all neccessary settings to be done before QHAna docker can be used
-```
 
 After starting the docker compose file open the QHAna UI and go to the settings page by clicking on the gear icon in the top right corner or directly opening http://localhost:8080/#/settings in the browser.
-Add the URL ``http://localhost:5005`` as a Plugin Runner entry to the list of plugin endpoints.
+All the settings should be configured as in the screenshots below.
 
 ![The QHAna settings page.](images/qhana-settings-page.png)
+![The QHAna settings page.](images/qhana-settings-page-2.png)
 
 Navigate back by using the browser history or clicking on the QHAna logo in the top left corner.
 
