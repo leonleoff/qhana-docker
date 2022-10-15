@@ -239,6 +239,7 @@ services:
 
   nisq-analyzer-db:
     image: postgres
+    profiles: ["nisq"]
     environment:
       POSTGRES_PASSWORD: nisq
       POSTGRES_USER: nisq
