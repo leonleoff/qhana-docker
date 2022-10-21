@@ -41,12 +41,16 @@ The question mark icon in the top right corner of a markdown editor brings up a 
 ### Using Plugins
 
 To use a plugin open the "Workspace" tab of the experiment.
-The page will be empty and tell you to choose a plugin.
+The default template will be selected, which is the "All Plugins" template.
+It displays all plugins unstructered on the left.
 
-![The empty experiment workspace.](images/qhana-experiment-workspace-page-empty.png)
+Templates can be used to give some structure to the plugins on the left.
+If you want to define your own templates, please read about it in the [QHAna Plugin Runner Documentation](https://qhana-plugin-runner.readthedocs.io/en/latest/templates.html).
 
-To display plugins, choose a template via the marked drop down menu.
-For this small tutorial, choose the "Hello World" template.
+![The empty experiment workspace.](images/qhana-experiment-workspace-page-default.png)
+
+For this tutorial, the "Hello World" template is perfect.
+To choose it, click on the selected "All Plugins" template and choose the "Hello World" template from the drop down menu.
 
 ![The empty experiment workspace.](images/qhana-experiment-workspace-page-choosing-template.png)
 
