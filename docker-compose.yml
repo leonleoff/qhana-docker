@@ -13,6 +13,7 @@ services:
       CONCURRENCY: 2
       BROKER_URL: redis://redis:6379
       RESULT_BACKEND: redis://redis:6379
+      CELERY_QUEUE: "qhana_queue1"
       SQLALCHEMY_DATABASE_URI: "postgresql+psycopg2://user:password@postgres:5432/default_db"
       DEFAULT_FILE_STORE: "minio"
       MINIO_CLIENT: '{"endpoint": "minio:9000", "access_key": "QHANA", "secret_key": "QHANAQHANA", "secure": false}'
@@ -52,6 +53,7 @@ services:
       CONCURRENCY: 2
       BROKER_URL: redis://redis:6379
       RESULT_BACKEND: redis://redis:6379
+      CELERY_QUEUE: "qhana_queue1"
       SQLALCHEMY_DATABASE_URI: "postgresql+psycopg2://user:password@postgres:5432/default_db"
       DEFAULT_FILE_STORE: "minio"
       MINIO_CLIENT: '{"endpoint": "minio:9000", "access_key": "QHANA", "secret_key": "QHANAQHANA", "secure": false}'
