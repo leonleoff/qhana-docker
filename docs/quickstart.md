@@ -44,7 +44,7 @@ To use a plugin open the "Workspace" tab of the experiment.
 The default template will be selected, which is the "All Plugins" template.
 It displays all plugins unstructered on the left.
 
-Templates can be used to give some structure to the plugins on the left.
+Templates can be used to give structure to the plugins on the left, by grouping them into categories.
 If you want to define your own templates, please read about it in the [QHAna Plugin Runner Documentation](https://qhana-plugin-runner.readthedocs.io/en/latest/templates.html).
 
 ![The empty experiment workspace.](images/qhana-experiment-workspace-page-default.png)
