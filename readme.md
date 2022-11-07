@@ -9,10 +9,11 @@ The user documentation for QHAna can be viewed on [qhana.readthedocs.io](https:/
 
 `docker-compose up`
 
+If you want to use the [NISQ-Analyzer](https://github.com/UST-QuAntiL/nisq-analyzer) plugin, use `docker-compose --profile nisq up`.
+
 ## Using QHAna
 
 Open http://localhost:8080 in a web browser to use the QHAna UI.
-Go to the settings and add http://localhost:5005 to the plugin endpoints.
 
 
 ## Build the Documentation
