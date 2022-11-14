@@ -86,6 +86,8 @@ services:
   nisq-analyzer-ui:
     profiles: ["nisq"]
     image: planqk/nisq-analyzer-ui:latest
+    depends_on:
+      - nisq-analyzer-db
     environment:
       NISQ_ANALYZER_HOST_NAME: localhost
       NISQ_ANALYZER_PORT: 5010
@@ -240,7 +242,9 @@ services:
       - default
 
   nisq-analyzer-db:
-    image: postgres
+    build:
+      context: nisq-analyzer-db
+      dockerfile: Dockerfile-nisq-analyzer-content
     profiles: ["nisq"]
     environment:
       POSTGRES_PASSWORD: nisq
