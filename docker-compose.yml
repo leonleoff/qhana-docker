@@ -97,7 +97,7 @@ services:
       - default
   nisq-analyzer:
     profiles: ["nisq"]
-    image: planqk/nisq-analyzer:latest
+    image: planqk/nisq-analyzer:without-qprov
     extra_hosts:
       - "host.docker.internal:host-gateway"
     environment:
@@ -244,7 +244,7 @@ services:
   nisq-analyzer-db:
     build:
       context: nisq-analyzer-db
-      dockerfile: Dockerfile-nisq-analyzer-content
+      dockerfile: Dockerfile
     profiles: ["nisq"]
     environment:
       POSTGRES_PASSWORD: nisq
