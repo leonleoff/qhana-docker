@@ -253,16 +253,6 @@ services:
     command: -p 5060
     ports:
       - "5060:5060"
-
-  gateway:
-    image: planqk/gateway:latest
-    profiles: ["nisq"]
-    environment:
-      NISQ_ANALYZER_URI: http://localhost:5010
-    ports:
-      - '6473:6473'
-    networks:
-      - default
       
 volumes:
   minio:
