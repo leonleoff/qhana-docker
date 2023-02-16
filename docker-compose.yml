@@ -119,8 +119,7 @@ services:
       RESULT_BACKEND: redis://redis:6379
       CELERY_QUEUE: "registry_queue"
       SQLALCHEMY_DATABASE_URI: "postgresql+psycopg2://user:password@postgres-registry:5432/default_db"
-      URL_MAP_FROM_LOCALHOST: '{"(https?://)(localhost|host.docker.internal):5005": "\\1qhana-plugin-runner:8080"}'
-      URL_MAP_TO_LOCALHOST: '{"(https?://)qhana-plugin-runner:8080": "\\1localhost:5005"}'
+      LOCALHOST_PROXY_PORTS: ":5005"
       PLUGIN_DISCOVERY_INTERVAL: 60
       PERIODIC_SCHEDULER: true
 
