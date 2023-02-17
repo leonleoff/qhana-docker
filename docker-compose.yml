@@ -99,7 +99,9 @@ services:
     extra_hosts:
       - "host.docker.internal:host-gateway"
     environment:
-      WAIT_HOSTS: redis:6379, postgres-registry:5432
+      WAIT_HOSTS: redis:6379, postgres-registry:5432, qhana-plugin-runner:8080
+      WAIT_SLEEP_INTERVAL: 5
+      WAIT_TIMEOUT: 600
       BROKER_URL: redis://redis:6379
       RESULT_BACKEND: redis://redis:6379
       CELERY_QUEUE: "registry_queue"
@@ -113,7 +115,9 @@ services:
     extra_hosts:
       - "host.docker.internal:host-gateway"
     environment:
-      WAIT_HOSTS: redis:6379, postgres-registry:5432
+      WAIT_HOSTS: redis:6379, postgres-registry:5432, qhana-plugin-runner:8080
+      WAIT_SLEEP_INTERVAL: 5
+      WAIT_TIMEOUT: 600
       CONTAINER_MODE: worker
       BROKER_URL: redis://redis:6379
       RESULT_BACKEND: redis://redis:6379
