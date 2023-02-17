@@ -24,8 +24,18 @@ Open http://localhost:8080 in a web browser to use the QHAna UI.
 
 ## Proxy configuration
 
+Some QHAna containers contain a proxy that forwards requests to the host machine.
+This makes networking easier when some services are running on the host machine and some in containers.
+The environment variable `LOCALHOST_PROXY_PORTS` is used to configure which ports will be forwarded to the host machine.
+You cannot forward ports that are already bound in the container.
+
+The following containers are already configured to forward the specified ports:
+- Plugin Runner and worker: 9090 (backend)
+- Backend: 5005 (Plugin Runner)
+- Registry worker: 5005 (Plugin Runner)
+
 To temporarily add more ports to the proxy configuration, set the environment variable `EXTRA_PROXY_PORTS` to the additional ports e.g. `:1234 :2345`.
-This can be done by creating a file named `.env` that contains `EXTRA_PROXY_PORTS=":1234 :2345"`.
+This can be done by creating a file named `.env` that contains e.g. `EXTRA_PROXY_PORTS=":1234 :2345"`.
 
 
 ## Build the Documentation
