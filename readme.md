@@ -16,6 +16,12 @@ If you want to use the [NISQ-Analyzer](https://github.com/UST-QuAntiL/nisq-analy
 Open http://localhost:8080 in a web browser to use the QHAna UI.
 
 
+## Proxy configuration
+
+To temporarily add more ports to the proxy configuration, set the environment variable `EXTRA_PROXY_PORTS` to the additional ports e.g. `:1234 :2345`.
+This can be done by creating a file named `.env` that contains `EXTRA_PROXY_PORTS=":1234 :2345"`.
+
+
 ## Build the Documentation
 
 ```bash

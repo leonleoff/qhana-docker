@@ -17,7 +17,7 @@ services:
       SQLALCHEMY_DATABASE_URI: "postgresql+psycopg2://user:password@postgres:5432/default_db"
       DEFAULT_FILE_STORE: "minio"
       MINIO_CLIENT: '{"endpoint": "minio:9000", "access_key": "QHANA", "secret_key": "QHANAQHANA", "secure": false}'
-      LOCALHOST_PROXY_PORTS: ":9090"
+      LOCALHOST_PROXY_PORTS: ":9090 ${EXTRA_PROXY_PORTS}"
       GIT_PLUGINS: "git+https://github.com/UST-QuAntiL/qhana-plugin-runner.git@main#subdirectory=/plugins\ngit+https://github.com/UST-QuAntiL/nisq-analyzer-prio-service.git@master#subdirectory=/plugins"
       NISQ_ANALYZER_UI_URL: http://localhost:5009
     extra_hosts:
@@ -66,7 +66,7 @@ services:
       SQLALCHEMY_DATABASE_URI: "postgresql+psycopg2://user:password@postgres:5432/default_db"
       DEFAULT_FILE_STORE: "minio"
       MINIO_CLIENT: '{"endpoint": "minio:9000", "access_key": "QHANA", "secret_key": "QHANAQHANA", "secure": false}'
-      LOCALHOST_PROXY_PORTS: ":9090"
+      LOCALHOST_PROXY_PORTS: ":9090 ${EXTRA_PROXY_PORTS}"
       GIT_PLUGINS: "git+https://github.com/UST-QuAntiL/qhana-plugin-runner.git@main#subdirectory=/plugins\ngit+https://github.com/UST-QuAntiL/nisq-analyzer-prio-service.git@master#subdirectory=/plugins"
     extra_hosts:
       - "host.docker.internal:host-gateway"
@@ -77,8 +77,8 @@ services:
     extra_hosts:
       - "host.docker.internal:host-gateway"
     environment:
-      LOCALHOST_PROXY_PORTS: ":5005"
-      QHANA_HOST: http://host.docker.internal:9090
+      LOCALHOST_PROXY_PORTS: ":5005 ${EXTRA_PROXY_PORTS}"
+      QHANA_HOST: http://localhost:9090
     ports:
       - 9090:9090
   ui:
@@ -119,7 +119,7 @@ services:
       RESULT_BACKEND: redis://redis:6379
       CELERY_QUEUE: "registry_queue"
       SQLALCHEMY_DATABASE_URI: "postgresql+psycopg2://user:password@postgres-registry:5432/default_db"
-      LOCALHOST_PROXY_PORTS: ":5005"
+      LOCALHOST_PROXY_PORTS: ":5005  ${EXTRA_PROXY_PORTS}"
       PLUGIN_DISCOVERY_INTERVAL: 60
       PERIODIC_SCHEDULER: true
 
