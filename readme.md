@@ -15,7 +15,7 @@ If you want to use the [NISQ-Analyzer](https://github.com/UST-QuAntiL/nisq-analy
 
 Docker Compose V1 and the `docker-compose` command will no longer be supported by the end of June 2023.
 `docker compose` (space instead of hyphen) should be used instead.
-For more information about the deprecation of Docker Compose V1 see https://www.docker.com/blog/new-docker-compose-v2-and-v1-deprecation/ .
+For more information about the deprecation of Docker Compose V1 see <https://www.docker.com/blog/new-docker-compose-v2-and-v1-deprecation/>.
 
 ## Using QHAna
 
