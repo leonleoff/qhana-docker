@@ -7,13 +7,35 @@ The user documentation for QHAna can be viewed on [qhana.readthedocs.io](https:/
 
 ## Start
 
-`docker-compose up`
+`docker compose up`
 
-If you want to use the [NISQ-Analyzer](https://github.com/UST-QuAntiL/nisq-analyzer) plugin, use `docker-compose --profile nisq up`.
+If you want to use the [NISQ-Analyzer](https://github.com/UST-QuAntiL/nisq-analyzer) plugin, use `docker compose --profile nisq up`.
+
+### Docker Compose V1 deprecation
+
+Docker Compose V1 and the `docker-compose` command will no longer be supported by the end of June 2023.
+`docker compose` (space instead of hyphen) should be used instead.
+For more information about the deprecation of Docker Compose V1 see <https://www.docker.com/blog/new-docker-compose-v2-and-v1-deprecation/>.
 
 ## Using QHAna
 
 Open http://localhost:8080 in a web browser to use the QHAna UI.
+
+
+## Proxy configuration
+
+Some QHAna containers contain a proxy that forwards requests to the host machine.
+This makes networking easier when some services are running on the host machine and some in containers.
+The environment variable `LOCALHOST_PROXY_PORTS` is used to configure which additional ports will be forwarded to the host machine.
+You cannot forward ports that are already bound in the container.
+
+The following containers are already configured to forward the specified ports:
+- Plugin Runner and worker: 9090 (backend)
+- Backend: 5005 (Plugin Runner)
+- Registry worker: 5005 (Plugin Runner)
+
+To temporarily add more ports to the proxy configuration, set the environment variable `EXTRA_PROXY_PORTS` to the additional ports e.g. `:1234 :2345`.
+This can be done by creating a file named `.env` that contains e.g. `EXTRA_PROXY_PORTS=":1234 :2345"`.
 
 
 ## Build the Documentation
