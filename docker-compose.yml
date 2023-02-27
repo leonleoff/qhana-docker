@@ -123,7 +123,7 @@ services:
       RESULT_BACKEND: redis://redis:6379
       CELERY_QUEUE: "registry_queue"
       SQLALCHEMY_DATABASE_URI: "postgresql+psycopg2://user:password@postgres-registry:5432/default_db"
-      LOCALHOST_PROXY_PORTS: ":5005  ${EXTRA_PROXY_PORTS}"
+      LOCALHOST_PROXY_PORTS: ":5005 :9090 ${EXTRA_PROXY_PORTS}"
       PLUGIN_DISCOVERY_INTERVAL: 60
       PERIODIC_SCHEDULER: true
 
