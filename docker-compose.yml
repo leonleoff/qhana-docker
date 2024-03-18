@@ -2,19 +2,20 @@ services:
   qhana-plugin-runner:
     image: ghcr.io/ust-quantil/qhana-plugin-runner:main
     depends_on:
-      - redis
-      - postgres
       - minio
     ports:
       - "5005:8080"
     volumes:
       - instance:/app/instance
     environment:
+      WAIT_HOSTS: host.docker.internal:6379, host.docker.internal:5432
+      WAIT_SLEEP_INTERVAL: 5
+      WAIT_TIMEOUT: 600
       CONCURRENCY: 2
-      BROKER_URL: redis://redis:6379
-      RESULT_BACKEND: redis://redis:6379
+      BROKER_URL: redis://host.docker.internal:6379
+      RESULT_BACKEND: redis://host.docker.internal:6379
       CELERY_QUEUE: "qhana_queue1"
-      SQLALCHEMY_DATABASE_URI: "postgresql+psycopg2://user:password@postgres:5432/default_db"
+      SQLALCHEMY_DATABASE_URI: "postgresql+psycopg2://user:password@host.docker.internal:5432/default_db"
       DEFAULT_FILE_STORE: "minio"
       MINIO_CLIENT: '{"endpoint": "localhost:9000", "access_key": "QHANA", "secret_key": "QHANAQHANA", "secure": false}'
       LOCALHOST_PROXY_PORTS: &localhost-proxy-ports ":5005 :5006 :5007 :9000 :9001 :9091 ${EXTRA_PROXY_PORTS}"
@@ -29,12 +30,16 @@ services:
       - "6379:6379"
   postgres:
     image: "postgres:latest"
+    ports:
+      - "5432:5432"
     environment:
       POSTGRES_PASSWORD: password
       POSTGRES_USER: user
       POSTGRES_DB: default_db
   postgres-registry:
     image: "postgres:latest"
+    ports:
+      - "5433:5432"
     environment:
       POSTGRES_PASSWORD: password
       POSTGRES_USER: user
@@ -59,12 +64,15 @@ services:
     volumes:
       - instance:/app/instance
     environment:
+      WAIT_HOSTS: host.docker.internal:6379, host.docker.internal:5432
+      WAIT_SLEEP_INTERVAL: 5
+      WAIT_TIMEOUT: 600
       CONTAINER_MODE: worker
       CONCURRENCY: 2
-      BROKER_URL: redis://redis:6379
-      RESULT_BACKEND: redis://redis:6379
+      BROKER_URL: redis://host.docker.internal:6379
+      RESULT_BACKEND: redis://host.docker.internal:6379
       CELERY_QUEUE: "qhana_queue1"
-      SQLALCHEMY_DATABASE_URI: "postgresql+psycopg2://user:password@postgres:5432/default_db"
+      SQLALCHEMY_DATABASE_URI: "postgresql+psycopg2://user:password@host.docker.internal:5432/default_db"
       DEFAULT_FILE_STORE: "minio"
       MINIO_CLIENT: '{"endpoint": "localhost:9000", "access_key": "QHANA", "secret_key": "QHANAQHANA", "secure": false}'
       LOCALHOST_PROXY_PORTS: *localhost-proxy-ports
@@ -101,13 +109,13 @@ services:
     extra_hosts:
       - "host.docker.internal:host-gateway"
     environment:
-      WAIT_HOSTS: redis:6379, postgres-registry:5432, qhana-plugin-runner:8080
+      WAIT_HOSTS: host.docker.internal:6379, host.docker.internal:5433
       WAIT_SLEEP_INTERVAL: 5
       WAIT_TIMEOUT: 600
-      BROKER_URL: redis://redis:6379
-      RESULT_BACKEND: redis://redis:6379
+      BROKER_URL: redis://host.docker.internal:6379
+      RESULT_BACKEND: redis://host.docker.internal:6379
       CELERY_QUEUE: "registry_queue"
-      SQLALCHEMY_DATABASE_URI: "postgresql+psycopg2://user:password@postgres-registry:5432/default_db"
+      SQLALCHEMY_DATABASE_URI: "postgresql+psycopg2://user:password@host.docker.internal:5433/default_db"
       LOCALHOST_PROXY_PORTS: *localhost-proxy-ports
       INITIAL_PLUGIN_SEEDS: "http://localhost:5005"
       PRECONFIGURED_SERVICES: '[{"serviceId": "qhana-backend", "name": "Backend", "url": "http://localhost:9091"}]'
@@ -118,14 +126,14 @@ services:
     extra_hosts:
       - "host.docker.internal:host-gateway"
     environment:
-      WAIT_HOSTS: redis:6379, postgres-registry:5432, qhana-plugin-runner:8080
+      WAIT_HOSTS: host.docker.internal:6379, host.docker.internal:5433
       WAIT_SLEEP_INTERVAL: 5
       WAIT_TIMEOUT: 600
       CONTAINER_MODE: worker
-      BROKER_URL: redis://redis:6379
-      RESULT_BACKEND: redis://redis:6379
+      BROKER_URL: redis://host.docker.internal:6379
+      RESULT_BACKEND: redis://host.docker.internal:6379
       CELERY_QUEUE: "registry_queue"
-      SQLALCHEMY_DATABASE_URI: "postgresql+psycopg2://user:password@postgres-registry:5432/default_db"
+      SQLALCHEMY_DATABASE_URI: "postgresql+psycopg2://user:password@host.docker.internal:5433/default_db"
       LOCALHOST_PROXY_PORTS: *localhost-proxy-ports
       PLUGIN_DISCOVERY_INTERVAL: 60
       PERIODIC_SCHEDULER: true
