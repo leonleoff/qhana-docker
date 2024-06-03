@@ -21,7 +21,7 @@ Because the default implementation assumes a shared file system between the work
 ```
 
 
-```yml
+```yaml
 services:
   qhana-plugin-runner:
     platform: linux/amd64
@@ -53,7 +53,7 @@ services:
 
 ## Open Ports
 
-```yml
+```yaml
 services:
   qhana-plugin-runner:
     ports:
@@ -97,7 +97,7 @@ They are used internally by the plugin runner.
 
 ## Settings
 
-```yml
+```yaml
 services:
   qhana-plugin-runner:
     environment:
@@ -170,7 +170,7 @@ The volume named `experiments` is used by the QHAna backend to persist the backe
 It contains all data stored for the experiments (as files in the file system) and an sqlite database.
 The backend can also be configured to use a MariaDB database with the `Config.toml` file.
 
-```yml
+```yaml
 services:
   qhana-plugin-runner:
     volumes:
