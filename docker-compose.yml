@@ -111,6 +111,7 @@ services:
     environment:
       WAIT_HOSTS: host.docker.internal:6379, host.docker.internal:5433
       WAIT_SLEEP_INTERVAL: 5
+      WAIT_AFTER: 5
       WAIT_TIMEOUT: 600
       BROKER_URL: redis://host.docker.internal:6379
       RESULT_BACKEND: redis://host.docker.internal:6379
@@ -128,6 +129,7 @@ services:
     environment:
       WAIT_HOSTS: host.docker.internal:6379, host.docker.internal:5433
       WAIT_SLEEP_INTERVAL: 5
+      WAIT_AFTER: 5
       WAIT_TIMEOUT: 600
       CONTAINER_MODE: worker
       BROKER_URL: redis://host.docker.internal:6379
