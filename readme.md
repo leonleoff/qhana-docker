@@ -38,6 +38,11 @@ To temporarily add more ports to the proxy configuration, set the environment va
 This can be done by creating a file named `.env` that contains e.g. `EXTRA_PROXY_PORTS=":1234 :2345"`.
 
 
+## Waiting for containers to be ready
+
+The qhana-plugin-runner, qhana-backend and qhana-plugin-registry images use `docker-compose-wait` to be able to wait for endpoints in other containers to be ready to receive requests. For configuration options see: https://github.com/ufoscout/docker-compose-wait?tab=readme-ov-file#additional-configuration-options
+
+
 ## Build the Documentation
 
 ```bash
