@@ -1,0 +1,149 @@
+digraph compose {
+    rankdir=LR;
+    edge [minlen=2];
+
+    browser [shape=rect]
+    
+    subgraph cluster_localhost {
+        style=filled;
+        color=lightgrey;
+        node [style=filled,color=white,fillcolor=white,shape=rect];
+        
+        uiPort [label=8080]
+        qhanaPluginRunnerPort [label=5005]
+        registryPort [label=5006]
+        redisPort [label=6379]
+        backendPort [label=9091]
+        postgresPort [label=5432]
+        postgresRegistryPort [label=5433]
+        minioPortA [label=9000]
+        minioPortB [label=9001]
+        
+        label = "Localhost";
+    }
+    
+    subgraph cluster_compose {
+        style=filled;
+        color=lightgrey;
+        node [style=filled,color=black,fillcolor=white,shape=rect];
+        edge [dir=none,minlen=3];
+        
+        uiPortD [label=8080,color=white]
+        ui [width=2.3]
+        uiPort -> uiPortD -> ui
+
+
+        subgraph cluster_pluginRunner {
+            style=filled;
+            color=grey;
+            fillcolor=lightgrey;
+            node [style=filled,color=black,fillcolor=white,shape=rect];
+            edge [dir=none,minlen=0,penwidth=4];
+
+
+            qhanaPluginRunner [label="qhana-plugin-runner",width=2.3]
+            worker [width=2.3]
+            qhanaPluginRunner -> worker
+        }
+        
+        qhanaPluginRunnerPortD [label=8080,color=white]
+        qhanaPluginRunnerPort -> qhanaPluginRunnerPortD -> qhanaPluginRunner
+        
+        workerPortD [label="–",color=white]
+        workerPortD -> worker
+
+
+        subgraph cluster_Registry {
+            style=filled;
+            color=grey;
+            fillcolor=lightgrey;
+            node [style=filled,color=black,fillcolor=white,shape=rect];
+            edge [dir=none,minlen=0,penwidth=4];
+
+            registry [width=2.3]
+            registryWorker [width=2.3]
+            registry -> registryWorker
+        }
+        
+        registryPortD [label=8080,color=white]
+        registryPort -> registryPortD -> registry
+        
+        registryWorkerPortD [label="–",color=white]
+        registryWorkerPortD -> registryWorker
+        
+        backendPortD [label=9090,color=white]
+        backend [width=2.3]
+        backendPort -> backendPortD -> backend
+
+        redisPortD [label=6379,color=white]
+        redis [width=2.3]
+        redisPort -> redisPortD -> redis
+        
+        postgresPortD [label=5432,color=white]
+        postgres [width=2.3]
+        postgresPort -> postgresPortD -> postgres
+        
+        postgresRegistryPortD [label=5432,color=white]
+        postgresRegistry [width=2.3]
+        postgresRegistryPort -> postgresRegistryPortD -> postgresRegistry
+        
+        minioPortAD [label=9000,color=white]
+        minioPortBD [label=9001,color=white]
+        minio [width=2.3,height=1]
+        minioPortA -> minioPortAD -> minio
+        minioPortB -> minioPortBD -> minio
+        
+        label = "Docker Compose";
+    
+        subgraph cluster_dns {
+            style=filled;
+            color=lightgrey;
+            fillcolor=gray;
+            node [style=filled,color=white,fillcolor=white,shape=rect,width=1.8];
+
+            redisPortDNS [label="6379\n(redis)"]
+            postgresPortDNS [label="5432\n(postgres)"]
+            postgresRegistryPortDNS [label="5433\n(postgres reg.)"]
+
+            label = "host.docker.internal";
+        }
+
+        subgraph cluster_proxy {
+            style=filled;
+            color=lightgrey;
+            fillcolor=gray;
+            node [style=filled,color=white,fillcolor=white,shape=rect,width=1.8];
+
+            qhanaPluginRunnerPortP [label="5005\n(plugin runner)"]
+            registryPortP [label="5006\n(registry)"]
+            unusedAPortP [label="5007\n(free)"]
+            backendPortP [label="9091\n(backend)"]
+            minioPortAP [label="9000\n(minio)"]
+            minioPortBP [label="9001\n(minio)"]
+            
+            label = "Localhost (proxy)";
+        }
+    }
+    
+    browser -> uiPort
+    browser -> qhanaPluginRunnerPort
+    browser -> registryPort
+    browser -> minioPortA
+    browser -> minioPortB
+    
+    qhanaPluginRunner -> redisPortDNS [color=blue]
+    worker -> redisPortDNS [color=blue]
+    worker -> qhanaPluginRunnerPortP
+    worker -> registryPortP
+    worker -> backendPortP
+    worker -> minioPortAP
+    registry -> redisPortDNS [color=blue]
+    registryWorker -> redisPortDNS [color=blue]
+    registryWorker -> qhanaPluginRunnerPortP
+    registryWorker -> backendPortP
+
+    qhanaPluginRunner -> postgresPortDNS [color=blue]
+    worker -> postgresPortDNS [color=blue]
+    registry -> postgresRegistryPortDNS [color=blue]
+    registryWorker -> postgresRegistryPortDNS [color=blue]
+}

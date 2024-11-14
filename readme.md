@@ -43,6 +43,15 @@ This can be done by creating a file named `.env` that contains e.g. `EXTRA_PROXY
 The qhana-plugin-runner, qhana-backend and qhana-plugin-registry images use `docker-compose-wait` to be able to wait for endpoints in other containers to be ready to receive requests. For configuration options see: https://github.com/ufoscout/docker-compose-wait?tab=readme-ov-file#additional-configuration-options
 
 
+## Using the docker-compose setup to develop plugins
+
+The docker compose setup can be used together with a locally running plugin runner instance.
+This can be useful during plugin development.
+To use a local plugin runner instance instead of the docker-compose instance make sure that the `qhana-plugin-runner` and `worker` services are not running before starting the local instance.
+Both the plugin runner and its corresponding worker must either run inside the docker-compose setup or locally.
+However, they can share the same redis instance, as they use different routing keys by default (can be changed with the `CELERY_QUEUE` env var).
+
+
 ## Build the Documentation
 
 ```bash
@@ -50,7 +59,7 @@ The qhana-plugin-runner, qhana-backend and qhana-plugin-registry images use `doc
 poetry run sphinx-build docs docs/_build
 
 # update docs requirements (run this after every update to poetry.lock!)
-poetry export --dev --format requirements.txt --without-hashes --output "./docs/requirements.txt"
+poetry export --with dev --format requirements.txt --without-hashes --output "./docs/requirements.txt"
 ```
 
 

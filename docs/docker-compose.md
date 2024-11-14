@@ -4,7 +4,7 @@ A short overview over the docker compose file.
 
 ## The Services
 
-The file 8 services, 7 are required while 1 is optional.
+The file contains multiple services, 7 are required while the rest are optional.
 The `ui` and `backend` service are the QHAna UI and the QHAna backend respectively.
 The UI is a web frontend written in Angular.
 The backend stores all experiment data and is written in ballerina.
@@ -17,9 +17,12 @@ The `muse-db` service is optional and provides the muse data in a live mysql dat
 ```{warning}
 The services `qhana-plugin-runner` and `worker` must have the exact same configuration apart from the concurrency settings.
 They must have the same plugins loaded, use the same task broker for the task queue and use the same database.
-Because the default implementation assumes a shared file system between the worker and the plugin runner they also need to share a file system!
 ```
 
+```{warning}
+If minio is NOT configured as the default store, then the `qhana-plugin-runner` and `worker` services require a **shared file system**!
+This can be achieved by mounting the same docker volume in both containers under the path `/app/instance`.
+```
 
 ```yaml
 services:
@@ -62,6 +65,8 @@ services:
     ports:
       - "6379:6379"
   postgres:
+    ports:
+      - "5432:5432"
   minio:
     ports:
       - "9000:9000"
@@ -70,14 +75,10 @@ services:
   worker:
   backend:
     ports:
-      - 9090:9090
+      - 9091:9090
   ui:
     ports:
       - 8080:8080
-```
-
-```{todo}
-Expose redis port for other plugin runners started outside the docker compose.
 ```
 
 The docker-compose file maps 4 ports to the outside.
@@ -94,6 +95,26 @@ Other plugin runners can use the redis broker for their task queue only if they 
 All other services are only available in the internal network created by docker-compose (using the service name as hostname).
 They are used internally by the plugin runner.
 
+```{tip}
+All URLs that get processed by any part of the QHAna application (e.g., UI, Backend, Plugin Runner (+ Worker), Plugin Registry (+ Worker), minio) need to resolve correctly from inside and outside of the docker compose network.
+To achieve this for a development setup without the use of static IPs, a reverse proxy is included in all relevant containers that bounces back calls to the container localhost to the host of the containers.
+The reverse proxy itself relys on `host.docker.internal` to resolve the container host!
+
+For debugging and convenience, other connections (e.g., connections to redis/postgres) also use `host.docker.internal` and the target containers expose their ports to the local host.
+This allows for easy debugging of the database from outside and reusing the redis broker for other celery workers.
+```
+
+### Network Connectivity
+
+```{graphviz} network-graph.dot
+:align: center
+:caption: Network Connectivity
+```
+
+Arrows symbolize connections while lines without arrows are used for port mappings.
+The blue arrows directly use the `host.docker.internal` dns address to bounce back to the localhost.
+However, the proxied localhost ports also rely on `host.docker.internal`.
+
 
 ## Settings
 
@@ -101,14 +122,20 @@ They are used internally by the plugin runner.
 services:
   qhana-plugin-runner:
     environment:
+      WAIT_HOSTS: host.docker.internal:6379, host.docker.internal:5432
+      WAIT_SLEEP_INTERVAL: 5
+      WAIT_TIMEOUT: 600
       CONCURRENCY: 2
-      BROKER_URL: redis://redis:6379
-      RESULT_BACKEND: redis://redis:6379
-      SQLALCHEMY_DATABASE_URI: "postgresql+psycopg2://user:password@postgres:5432/default_db"
+      BROKER_URL: redis://host.docker.internal:6379
+      RESULT_BACKEND: redis://host.docker.internal:6379
+      CELERY_QUEUE: "qhana_queue1"
+      SQLALCHEMY_DATABASE_URI: "postgresql+psycopg2://user:password@host.docker.internal:5432/default_db"
       DEFAULT_FILE_STORE: "minio"
-      MINIO_CLIENT: '{"endpoint": "minio:9000", "access_key": "QHANA", "secret_key": "QHANAQHANA", "secure": false}'
-      URL_MAP: '{"(https?://)(localhost|host.docker.internal):9090": "\\1backend:9090"}'
+      MINIO_CLIENT: '{"endpoint": "localhost:9000", "access_key": "QHANA", "secret_key": "QHANAQHANA", "secure": false}'
+      LOCALHOST_PROXY_PORTS: &localhost-proxy-ports ":5005 :5006 :5007 :9000 :9001 :9091 ${EXTRA_PROXY_PORTS}"
       GIT_PLUGINS: "git+https://github.com/UST-QuAntiL/qhana-plugin-runner.git@main#subdirectory=/plugins"
+      PLUGIN_FOLDERS: &plugin-folders ./git-plugins:./git-plugins/classical_ml/data_preparation
+      NISQ_ANALYZER_UI_URL: http://localhost:5009
   redis:
   postgres:
     environment:
@@ -121,18 +148,24 @@ services:
       MINIO_ROOT_PASSWORD: QHANAQHANA
   worker:
     environment:
+      WAIT_HOSTS: host.docker.internal:6379, host.docker.internal:5432
+      WAIT_SLEEP_INTERVAL: 5
+      WAIT_TIMEOUT: 600
       CONTAINER_MODE: worker
       CONCURRENCY: 2
-      BROKER_URL: redis://redis:6379
-      RESULT_BACKEND: redis://redis:6379
-      SQLALCHEMY_DATABASE_URI: "postgresql+psycopg2://user:password@postgres:5432/default_db"
+      BROKER_URL: redis://host.docker.internal:6379
+      RESULT_BACKEND: redis://host.docker.internal:6379
+      CELERY_QUEUE: "qhana_queue1"
+      SQLALCHEMY_DATABASE_URI: "postgresql+psycopg2://user:password@host.docker.internal:5432/default_db"
       DEFAULT_FILE_STORE: "minio"
-      MINIO_CLIENT: '{"endpoint": "minio:9000", "access_key": "QHANA", "secret_key": "QHANAQHANA", "secure": false}'
-      URL_MAP: '{"(https?://)(localhost|host.docker.internal):9090": "\\1backend:9090"}'
-      GIT_PLUGINS: "git+https://github.com/UST-QuAntiL/qhana-plugin-runner.git@main#subdirectory=/plugins"
+      MINIO_CLIENT: '{"endpoint": "localhost:9000", "access_key": "QHANA", "secret_key": "QHANAQHANA", "secure": false}'
+      LOCALHOST_PROXY_PORTS: *localhost-proxy-ports
+      GIT_PLUGINS: *git-plugins
+      PLUGIN_FOLDERS: *plugin-folders
   backend:
     environment:
-      QHANA_URL_MAPPING: '{"(?<=^|https?://)(localhost|host.docker.internal):5005": "qhana-plugin-runner:8080", "(?<=^|https?://)localhost(:[0-9]+)?": "host.docker.internal$$1"}'
+      LOCALHOST_PROXY_PORTS: *localhost-proxy-ports
+      QHANA_HOST: http://localhost:9091
 ```
 
 The QHAna plugin runner and worker share mostly the same configuration.
@@ -141,13 +174,9 @@ The environent variable for {envvar}`CONCURRENCY` can have different values.
 The worker container must have the environment variable {envvar}`CONTAINER_MODE` set to worker to start the image as a worker (since the exact same image as the plugin runner is used as API server and as worker).
 The user and password set in the `redis` service must be used to construct the {envvar}`SQLALCHEMY_DATABASE_URI` (replace the existing `user:password` section with the changed user and password).
 The variable `MINIO_CLIENT` is a json object that holds the client configuration used to access the minio server.
-Because URLs from outside just point to the docker host (often "localhost") they must be mapped to the correct container.
-This can be done with the `URL_MAP``variable which holds a JSON map.
-The keys of this map are (python!) regex patterns that will get replaced with their replacement string.
-The backend has a similar configuration `QHANA_URL_MAPPING` that uses java regex patterns and replacement!
 
 The containers that use (or can use) a database are configured with a wait script.
-See the console output of these containers for more information.
+See <https://github.com/ufoscout/docker-compose-wait?tab=readme-ov-file#additional-configuration-options> for config options.
 
 
 ### Advanced Configuration

@@ -7,7 +7,7 @@ license = "CC-BY-4.0"
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.7"
+python = "^3.10"
 
 [tool.poetry.dev-dependencies]
 Sphinx = "^4.0.0"
@@ -24,6 +24,7 @@ enable-napoleon = false
 enable-autosectionlabel = true
 enable-markdown = true
 enable-todo = true
+enable-graphviz=true
 # update gitignore if you want to edit docs/changelog.md manually!
 include-changelog = false
 # update gitignore if you want to edit docs/readme.md manually!
